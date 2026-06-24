@@ -18,27 +18,45 @@ Main features:
 - Export and import workflow for manager settings and dialogue data
 - Localization preview in the editor and localization loading at runtime
 
-## Editor Windows
-
-### Dialogue Node Editor
+## Dialogue Node Editor
 
 Menu path:
 
 `DialogueEngine/Dialogue Node Editor`
 
+This window is used to build dialogue flow as a node graph and save it as JSON.
+
 Features:
 
-- Create dialogue flow with `Add Entry`, `Add Node`, `Add Delay`, and `Add Condition`
-- Save and reload graph JSON with `Save` and `Refresh`
-- Preview the selected `textKey` and localized text in the left preview panel
-- Filter the graph by `dialogueId` from the top-right dropdown
-- When a specific `dialogueId` filter is active, newly created `Node`, `Delay`, and `Condition` nodes inherit that `dialogueId`
+- Top toolbar: `Add Entry`, `Add Node`, `Add Delay`, `Add Condition`, `Save`, `Refresh`
+- Left preview panel: shows the selected Text Node's `textKey` and localized text in the default language
+- Top-right `dialogueId` filter: lets you focus on a single dialogue
+- Build flow with node connections (`next` and choice branches)
+- Displays save-state notifications for unsaved changes, success, warnings, and errors
 
-### Dialogue Engine Manager
+![Dialogue GraphView](Assets/DialogueEngine/Docs/Images/graphview.png)
+
+## Node Editor Workflow
+
+1. Create an Entry node with `Add Entry` and assign a `dialogueId`.
+2. Use the top-right `dialogueId` dropdown to focus on a specific dialogue.
+3. Create a Text Node with `Add Node` and configure `textKey`, `speaker`, and optional `event`.
+4. While a specific `dialogueId` filter is active, newly created `Node`, `Delay`, and `Condition` nodes automatically inherit that `dialogueId`. `Add Entry` is excluded.
+5. Connect the Entry node's `next` output to the Text Node's `input` to start the dialogue flow.
+6. Continue connecting dialogue nodes to build the main sequence. If branching is needed, enable `isChoice` and connect the choice output ports.
+7. Insert a Delay node with `Add Delay` when timing or pacing is required.
+8. Insert a Condition node with `Add Condition` and connect its `true` / `false` outputs to different branches.
+9. Click `Save` to write the graph to JSON. Check the status message after saving.
+10. Use `Refresh` to reload the graph from disk.
+11. Click a node to view its `textKey` and localized preview in the left preview panel.
+
+## Dialogue Engine Manager
 
 Menu path:
 
 `DialogueEngine/Dialogue Engine Manager`
+
+This window manages project-wide settings and runtime definitions through a ScriptableObject.
 
 Tabs:
 
@@ -49,34 +67,109 @@ Tabs:
 - `Conditions`
 - `Export & Import`
 
-Responsibilities:
+### General
 
-- Configure default language and text reveal settings
-- Override the dialogue textbox prefab
-- Override the default L10N JSON file with a custom `TextAsset`
-- Define reusable speakers, events, parameters, and conditions
-- Export and import manager settings and dialogue data
+The General tab contains global runtime settings such as language, reveal behavior, input options, and default UI overrides.
 
-## General Settings
+| Field | Description |
+|---|---|
+| `defaultLanguage` | Default language code, for example `ko` or `en` |
+| `Overriding L10n File` | Custom localization JSON `TextAsset` used instead of the default `DialogueTextData.json`. Used by both node preview and runtime dialogue text loading |
+| `dialogueTextRevealType` | Text reveal mode (instant / character-based / word-based) |
+| `dialogueTextRevealSpeed` | Text reveal speed interval |
+| `dialogueAdvanceInputs` | Allowed advance inputs (`MouseLeft`, `Space`, `Enter`) |
+| `dialogueTextBackground` | Dialogue background sprite |
+| `Overriding Prefab` | Prefab that replaces the default textbox. Must implement `IDialogueEngineTextBox` |
+| `Player Speaker(System)` | Built-in `player` speaker settings with fixed `speakerId/name=player`, plus `thumbnail` and `textColor` |
 
-The `General` tab includes:
+![General Tab](Assets/DialogueEngine/Docs/Images/generaltab.png)
 
-- `defaultLanguage`
-- `Overriding L10n File`
-- `dialogueTextRevealType`
-- `dialogueTextRevealSpeed`
-- `dialogueAdvanceInputs`
-- `dialogueTextBackground`
-- `Overriding Prefab`
-- `Player Speaker(System)`
+### Events
 
-### Overriding L10n File
+The Events tab defines reusable named events and their type-specific data.
 
-By default, the system uses:
+| Field | Description |
+|---|---|
+| `enableEvents` | Enables or disables the event system |
+| `eventName` | Event key referenced by dialogue nodes |
+| `eventType` | Event behavior type |
+| `CameraShake` | Uses `duration`, `intensity`, `shakeAxis` |
+| `CameraMove` | Uses `targetName`, `targetPosition`, `duration` |
+| `PlaySound` | Uses `audioClip`, `volume`, `loop` |
+| `StopSound` | Uses `targetName`, `fadeOut` |
+
+![Events Tab](Assets/DialogueEngine/Docs/Images/eventtab.png)
+
+### Speakers
+
+The Speakers tab defines speaker presentation data such as name, thumbnail, and text color.
+
+| Field | Description |
+|---|---|
+| `speakerId` | Speaker identifier selected from dialogue nodes |
+| `name` | Display name shown in UI |
+| `thumbnail` | Speaker thumbnail image |
+| `textColor` | Speaker dialogue text color |
+| `player` | Managed in the General tab, not edited directly in the Speakers tab |
+
+![Speakers Tab](Assets/DialogueEngine/Docs/Images/speakertab.png)
+
+### Parameters
+
+The Parameters tab defines runtime values that can be used by conditions.
+
+| Field | Description |
+|---|---|
+| `enableParameters` | Enables or disables the parameter system |
+| `parameterName` | Parameter key |
+| `parameterType` | `Bool`, `Int`, `Float`, `String`, or `Time` |
+| `Default Value` | Type-specific default value |
+| `VariableTime` | Must use `hh:mm:ss` format |
+
+![Parameters Tab](Assets/DialogueEngine/Docs/Images/parametertab.png)
+
+### Conditions
+
+The Conditions tab defines reusable condition rules based on parameters.
+
+| Field | Description |
+|---|---|
+| `enableConditions` | Enables or disables the condition system |
+| `conditionName` | Condition key selected by Condition Nodes |
+| `Parameter` | Must reference a parameter defined in the Parameters tab |
+| `Operator` | Allowed comparison operators depend on parameter type |
+| `Value` | Comparison value matching the selected parameter type |
+
+![Conditions Tab](Assets/DialogueEngine/Docs/Images/conditiontab.png)
+
+### Export & Import
+
+Menu path:
+
+`DialogueEngine/Dialogue Engine Manager -> Export & Import`
+
+This tab exports and imports manager settings and dialogue JSON data.
+
+| Button | Description |
+|---|---|
+| `Export All` | Exports manager settings and dialogue JSON together |
+| `Export Manager` | Exports only manager settings |
+| `Export Dialogue` | Exports only graph dialogue JSON |
+| `Import` | Restores manager settings from `Export All` or `Export Manager` JSON |
+
+- Unity object references such as thumbnails, audio clips, and prefabs are exported as asset paths
+- During import, assets are restored from those paths if they exist
+- Invalid JSON does not clear current settings; import fails safely
+
+![Export Tab](Assets/DialogueEngine/Docs/Images/exporttab.png)
+
+## L10N File Structure and Override
+
+Default localization file path:
 
 `Assets/DialogueEngine/Resources/DialogueEngineResources/DialogueTextData.json`
 
-Expected JSON shape:
+Expected JSON structure:
 
 ```json
 {
@@ -91,30 +184,11 @@ Expected JSON shape:
 }
 ```
 
-If `Overriding L10n File` is assigned in the `General` tab:
+If `Overriding L10n File` is assigned in the General tab:
 
-- Node preview uses that file first
+- The Node Editor preview uses that file first
 - Runtime dialogue text loading also uses that file first
-- If empty, the default `DialogueTextData.json` is used
-
-## Export & Import
-
-Menu path:
-
-`DialogueEngine/Dialogue Engine Manager -> Export & Import`
-
-Buttons:
-
-- `Export All`: exports manager settings and dialogue JSON together
-- `Export Manager`: exports only manager settings
-- `Export Dialogue`: exports only graph dialogue JSON
-- `Import`: restores manager settings from `Export All` or `Export Manager` JSON
-
-Notes:
-
-- Unity object references such as thumbnails, audio clips, and prefabs are exported as asset paths
-- During import, assets are restored from those paths if they exist
-- Invalid JSON does not clear current settings; import fails safely
+- If no override is assigned, the default `DialogueTextData.json` is used
 
 ## Basic Workflow
 
