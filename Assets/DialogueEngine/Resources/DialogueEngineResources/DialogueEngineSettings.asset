@@ -1,0 +1,159 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23d40e3a37fa3e24eb413422145f23cb, type: 3}
+  m_Name: DialogueEngineSettings
+  m_EditorClassIdentifier: 
+  general:
+    defaultLanguage: en
+    overridingL10nFile: {fileID: 0}
+    dialogueTextRevealType: 1
+    dialogueTextRevealSpeed: 0.1
+    dialogueAdvanceInputs: -1
+    dialogueTextBackground: {fileID: 0}
+    overridingPrefab: {fileID: 0}
+  events:
+    enableEvents: 1
+    definitions:
+    - eventName: CameraShake1
+      eventType: 1
+      duration: 0.2
+      intensity: 0.3
+      shakeAxis: 2
+      targetName: 
+      targetPosition: {x: 0, y: 0, z: 0}
+      audioClip: {fileID: 0}
+      loop: 0
+      volume: 1
+      fadeOut: 0.1
+      prefab: {fileID: 0}
+      spawnPointName: 
+      spawnOffset: {x: 0, y: 0, z: 0}
+      delay: 0
+    - eventName: PlayShakeSound
+      eventType: 3
+      duration: 0.2
+      intensity: 1
+      shakeAxis: 3
+      targetName: 
+      targetPosition: {x: 0, y: 0, z: 0}
+      audioClip: {fileID: 8300000, guid: b0007ec1d3271494682ce6d3bbc5c1d3, type: 3}
+      loop: 0
+      volume: 1
+      fadeOut: 0.1
+      prefab: {fileID: 0}
+      spawnPointName: 
+      spawnOffset: {x: 0, y: 0, z: 0}
+      delay: 0
+    - eventName: CameraShake2
+      eventType: 1
+      duration: 3
+      intensity: 1
+      shakeAxis: 2
+      targetName: 
+      targetPosition: {x: 0, y: 0, z: 0}
+      audioClip: {fileID: 0}
+      loop: 0
+      volume: 1
+      fadeOut: 0.1
+      prefab: {fileID: 0}
+      spawnPointName: 
+      spawnOffset: {x: 0, y: 0, z: 0}
+      delay: 0
+    - eventName: Custom1
+      eventType: 5
+      duration: 0.2
+      intensity: 1
+      shakeAxis: 3
+      targetName: 
+      targetPosition: {x: 0, y: 0, z: 0}
+      audioClip: {fileID: 0}
+      loop: 0
+      volume: 1
+      fadeOut: 0.1
+      prefab: {fileID: 0}
+      spawnPointName: 
+      spawnOffset: {x: 0, y: 0, z: 0}
+      delay: 0
+  speakers:
+    speakers:
+    - speakerId: N01
+      name: Sam
+      thumbnail: {fileID: 21300000, guid: abd5a126e27febd438ce867ba26c185c, type: 3}
+      textColor: {r: 0, g: 0, b: 0, a: 1}
+    - speakerId: N02
+      name: Peter
+      thumbnail: {fileID: 21300000, guid: 17b1507bb64f51a49a37e7ebcf6250b5, type: 3}
+      textColor: {r: 0.9150943, g: 0.6949537, b: 0.6949537, a: 1}
+    - speakerId: N03
+      name: Seori
+      thumbnail: {fileID: 21300000, guid: 776b5d852d406f6418400fb3a9f70ee9, type: 3}
+      textColor: {r: 0.15712889, g: 0.31132078, b: 0.16313635, a: 1}
+    - speakerId: player
+      name: player
+      thumbnail: {fileID: 21300000, guid: f051de1c0814fbc43abd82db9ecbdd1b, type: 3}
+      textColor: {r: 1, g: 1, b: 1, a: 1}
+    - speakerId: N04
+      name: Tim
+      thumbnail: {fileID: 0}
+      textColor: {r: 0.9811321, g: 0.38412246, b: 0.38412246, a: 1}
+    - speakerId: Narrator
+      name: 
+      thumbnail: {fileID: 0}
+      textColor: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 1}
+  parameters:
+    enableParameters: 1
+    definitions:
+    - parameterName: Level
+      parameterType: 2
+      defaultBoolValue: 0
+      defaultIntValue: 1
+      defaultFloatValue: 0
+      defaultStringValue: 
+      defaultTimeValue: 
+    - parameterName: WorkingTime
+      parameterType: 5
+      defaultBoolValue: 0
+      defaultIntValue: 0
+      defaultFloatValue: 0
+      defaultStringValue: 
+      defaultTimeValue: 00:00:00
+  conditions:
+    enableConditions: 1
+    definitions:
+    - conditionName: Level10
+      parameterName: Level
+      comparisonOperator: 2
+      expectedValue: 
+      intValue: 10
+      floatValue: 0
+      boolValue: 0
+    - conditionName: Level20
+      parameterName: Level
+      comparisonOperator: 2
+      expectedValue: 
+      intValue: 20
+      floatValue: 0
+      boolValue: 0
+    - conditionName: LeaveTime
+      parameterName: WorkingTime
+      comparisonOperator: 2
+      expectedValue: 17:00:00
+      intValue: 0
+      floatValue: 0
+      boolValue: 0
+    - conditionName: ArriveTime
+      parameterName: WorkingTime
+      comparisonOperator: 3
+      expectedValue: 08:00:00
+      intValue: 0
+      floatValue: 0
+      boolValue: 0

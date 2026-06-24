@@ -1,0 +1,417 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DialogueEngineManager API 문서</title>
+  <style>
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --text: #1f2328;
+      --muted: #5f6b7a;
+      --line: #d8dee6;
+      --accent: #0b6cf5;
+      --code-bg: #f2f4f8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .wrap {
+      max-width: 1000px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    h1, h2, h3 { margin: 0 0 12px; }
+    h1 { font-size: 28px; }
+    h2 { font-size: 22px; margin-top: 4px; }
+    p { margin: 8px 0; }
+    ul { margin: 8px 0 8px 20px; }
+    code, pre {
+      font-family: Consolas, Monaco, monospace;
+      background: var(--code-bg);
+    }
+    code {
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+    pre {
+      padding: 12px;
+      border-radius: 8px;
+      overflow: auto;
+      border: 1px solid var(--line);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f5f8ff;
+      color: #102a56;
+    }
+    .muted { color: var(--muted); }
+    .pill {
+      display: inline-block;
+      background: #eaf2ff;
+      color: #0d3f8f;
+      border: 1px solid #c9ddff;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 12px;
+      margin-right: 6px;
+    }
+    .footer {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .method-block {
+      margin-top: 28px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--line);
+    }
+    .method-block:first-of-type {
+      margin-top: 8px;
+      border-top: 0;
+      padding-top: 0;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card">
+      <h1>DialogueEngineManager API 문서</h1>
+      <p class="muted">
+        기준 파일: <code>Assets/DialogueEngine/Scripts/DialogueEngineManager/DialogueEngineManager.cs</code>
+      </p>
+      <p>
+        <code>DialogueEngineManager</code>는 대화 시스템 런타임 진입점입니다.
+        초기화, 대화 시작, 라이프사이클 등록, 이벤트 핸들러 등록, 파라미터 값을 외부에서 제어할 수 있습니다.
+      </p>
+      <div>
+        <span class="pill">Static API</span>
+        <span class="pill">Runtime Control</span>
+        <span class="pill">Parameter Binding</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>빠른 시작</h2>
+      <pre><code class="language-csharp">using DialogueEngine;
+
+public class DialogueBootstrap : MonoBehaviour
+{
+    private void Start()
+    {
+        DialogueEngineManager.Init(success =&gt;
+        {
+            if (!success) return;
+            DialogueEngineManager.StartDialogue("INTRO_001");
+        });
+    }
+}</code></pre>
+      <p class="muted">권장 순서: <code>Init</code> 완료 후 <code>StartDialogue</code> 호출</p>
+    </section>
+
+    <section class="card">
+      <h2>메서드 목록</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 34%;">시그니처</th>
+            <th style="width: 18%;">분류</th>
+            <th>설명</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Init(Action&lt;bool&gt; onComplete)</code></td>
+            <td>Core</td>
+            <td>엔진 초기화. 완료 시 콜백으로 성공/실패를 전달합니다.</td>
+          </tr>
+          <tr>
+            <td><code>StartDialogue(string dialogueId)</code></td>
+            <td>Core</td>
+            <td>해당 <code>dialogueId</code>의 대화를 시작합니다.</td>
+          </tr>
+          <tr>
+            <td><code>RegisterDialogueLifecycle(IDialogueLifecycle lifecycle)</code></td>
+            <td>Core</td>
+            <td>대화 시작/종료/텍스트 시작/선택 등의 라이프사이클 콜백을 등록합니다.</td>
+          </tr>
+          <tr>
+            <td><code>SetPlayerName(string name)</code></td>
+            <td>General</td>
+            <td><code>player</code> speaker의 이름 오버라이드 값을 설정합니다.</td>
+          </tr>
+          <tr>
+            <td><code>SetPlayerThumbnail(UnityEngine.UI.Image thumbnail)</code></td>
+            <td>General</td>
+            <td><code>player</code> 썸네일로 사용할 <code>Image.sprite</code>를 설정합니다.</td>
+          </tr>
+          <tr>
+            <td><code>ChangeLanguage(string language)</code></td>
+            <td>General</td>
+            <td>텍스트 조회 언어 코드를 변경합니다. 예: <code>"ko"</code>, <code>"en"</code>.</td>
+          </tr>
+          <tr>
+            <td><code>SetNextKey(KeyCode key)</code></td>
+            <td>General</td>
+            <td>텍스트 진행 입력 키를 커스텀 키로 추가 설정합니다.</td>
+          </tr>
+          <tr>
+            <td><code>SetCustomEventHandler(string eventName, Action handler)</code></td>
+            <td>Event</td>
+            <td>이벤트 이름별 커스텀 실행 함수를 등록/해제합니다. (<code>handler == null</code>이면 해제)</td>
+          </tr>
+          <tr>
+            <td><code>GetParameters()</code></td>
+            <td>Parameter</td>
+            <td>정의된 파라미터 이름과 타입 맵을 반환합니다.</td>
+          </tr>
+          <tr>
+            <td><code>SetIntParameter(string parameterName, int value)</code></td>
+            <td>Parameter</td>
+            <td>Int 파라미터 값을 설정합니다.</td>
+          </tr>
+          <tr>
+            <td><code>SetFloatParameter(string parameterName, float value)</code></td>
+            <td>Parameter</td>
+            <td>Float 파라미터 값을 설정합니다.</td>
+          </tr>
+          <tr>
+            <td><code>SetStringParameter(string parameterName, string value)</code></td>
+            <td>Parameter</td>
+            <td>String 파라미터 값을 설정합니다.</td>
+          </tr>
+          <tr>
+            <td><code>SetBoolParameter(string parameterName, bool value)</code></td>
+            <td>Parameter</td>
+            <td>Bool 파라미터 값을 설정합니다.</td>
+          </tr>
+          <tr>
+            <td><code>SetTimeParameter(string parameterName, string value)</code></td>
+            <td>Parameter</td>
+            <td>Time 파라미터 값을 설정합니다. 형식은 <code>hh:mm:ss</code>를 사용합니다.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Method Details</h2>
+
+      <div class="method-block">
+      <h3><code>Init(Action&lt;bool&gt; onComplete)</code></h3>
+      <p>엔진 리소스를 비동기로 초기화하고 결과를 콜백으로 반환합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>onComplete</code></td><td><code>Action&lt;bool&gt;</code></td><td>초기화 성공 시 <code>true</code>, 실패 시 <code>false</code></td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.Init(success =&gt;
+{
+    if (!success) Debug.LogError("Init failed");
+});</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>StartDialogue(string dialogueId)</code></h3>
+      <p><code>dialogueId</code>를 기준으로 대화를 시작합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>dialogueId</code></td><td><code>string</code></td><td>Entry 노드에 정의된 대화 식별자</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.StartDialogue("INTRO_001");</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>RegisterDialogueLifecycle(IDialogueLifecycle lifecycle)</code></h3>
+      <p>대화 이벤트에 대한 라이프사이클 콜백을 등록합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>lifecycle</code></td><td><code>IDialogueLifecycle</code></td><td>시작/종료/텍스트/선택 콜백 구현체</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.RegisterDialogueLifecycle(myLifecycle);</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>SetPlayerName(string name)</code></h3>
+      <p><code>player</code> speaker의 이름 오버라이드를 설정합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>name</code></td><td><code>string</code></td><td>플레이어 표시 이름</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.SetPlayerName("Hero");</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>SetPlayerThumbnail(UnityEngine.UI.Image thumbnail)</code></h3>
+      <p><code>Image.sprite</code>를 사용해 플레이어 썸네일을 지정합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>thumbnail</code></td><td><code>UnityEngine.UI.Image</code></td><td>플레이어 포트레이트 Image 컴포넌트</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.SetPlayerThumbnail(playerPortraitImage);</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>ChangeLanguage(string language)</code></h3>
+      <p>텍스트 조회에 사용할 언어를 변경합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>language</code></td><td><code>string</code></td><td>언어 코드 (예: <code>"ko"</code>, <code>"en"</code>)</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.ChangeLanguage("en");</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>SetNextKey(KeyCode key)</code></h3>
+      <p>대화 진행에 사용할 커스텀 키를 설정합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>key</code></td><td><code>UnityEngine.KeyCode</code></td><td>대화 진행 입력 키</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.SetNextKey(KeyCode.F);</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>SetCustomEventHandler(string eventName, Action handler)</code></h3>
+      <p>이벤트 이름에 사용자 코드를 연결합니다. <code>null</code>을 전달하면 등록을 해제합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>eventName</code></td><td><code>string</code></td><td>등록된 이벤트 이름</td></tr>
+          <tr><td><code>handler</code></td><td><code>Action</code></td><td>실행할 콜백 함수</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.SetCustomEventHandler("BOSS_WARNING", () =&gt;
+{
+    Debug.Log("Triggered");
+});</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>GetParameters()</code></h3>
+      <p>현재 정의된 파라미터 이름과 타입 목록을 반환합니다.</p>
+      <table>
+        <thead><tr><th>Return</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>parameters</code></td><td><code>Dictionary&lt;string, DialogueParameterType&gt;</code></td><td>파라미터 이름-타입 매핑</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">var map = DialogueEngineManager.GetParameters();</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>SetIntParameter(string parameterName, int value)</code></h3>
+      <p><code>Int</code> 타입 파라미터 값을 업데이트합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>parameterName</code></td><td><code>string</code></td><td>파라미터 이름</td></tr>
+          <tr><td><code>value</code></td><td><code>int</code></td><td>설정할 값</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.SetIntParameter("Affinity", 5);</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>SetFloatParameter(string parameterName, float value)</code></h3>
+      <p><code>Float</code> 타입 파라미터 값을 업데이트합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>parameterName</code></td><td><code>string</code></td><td>파라미터 이름</td></tr>
+          <tr><td><code>value</code></td><td><code>float</code></td><td>설정할 값</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.SetFloatParameter("VolumeScale", 0.8f);</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>SetStringParameter(string parameterName, string value)</code></h3>
+      <p><code>String</code> 타입 파라미터 값을 업데이트합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>parameterName</code></td><td><code>string</code></td><td>파라미터 이름</td></tr>
+          <tr><td><code>value</code></td><td><code>string</code></td><td>설정할 문자열 값</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.SetStringParameter("Region", "Village");</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>SetBoolParameter(string parameterName, bool value)</code></h3>
+      <p><code>Bool</code> 타입 파라미터 값을 업데이트합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>parameterName</code></td><td><code>string</code></td><td>파라미터 이름</td></tr>
+          <tr><td><code>value</code></td><td><code>bool</code></td><td>설정할 bool 값</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.SetBoolParameter("HasKey", true);</code></pre>
+      </div>
+
+      <div class="method-block">
+      <h3><code>SetTimeParameter(string parameterName, string value)</code></h3>
+      <p><code>Time</code> 타입 파라미터 값을 <code>hh:mm:ss</code> 형식으로 업데이트합니다.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>parameterName</code></td><td><code>string</code></td><td>파라미터 이름</td></tr>
+          <tr><td><code>value</code></td><td><code>string</code></td><td><code>hh:mm:ss</code> 형식의 시간 문자열</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-csharp">DialogueEngineManager.SetTimeParameter("CurrentTime", "18:30:00");</code></pre>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>주의사항</h2>
+      <ul>
+        <li><code>Init</code> 전에 <code>StartDialogue</code>를 호출하면 동작하지 않을 수 있습니다.</li>
+        <li><code>SetTimeParameter</code> 값은 <code>hh:mm:ss</code> 형식을 권장합니다.</li>
+        <li>파라미터 이름/타입은 Settings에 정의된 항목과 일치해야 합니다.</li>
+      </ul>
+    </section>
+
+    <p class="footer">Generated for DialogueEngine product documentation.</p>
+  </div>
+</body>
+</html>

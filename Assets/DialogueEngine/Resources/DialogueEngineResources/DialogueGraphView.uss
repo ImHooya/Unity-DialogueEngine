@@ -1,0 +1,23 @@
+﻿/* Graph root */
+.graphView {
+    flex-grow: 1;
+}
+
+/* Optional node tweaks */
+.node {
+    min-width: 220px;
+}
+
+.node > .main-container {
+    background-color: rgb(95, 95, 95);
+}
+
+/* Port label spacing */
+.port .label {
+    -unity-font-style: normal;
+}
+
+/* Grid background subtle tint */
+.grid-background {
+    background-color: rgb(45, 45, 51);
+}

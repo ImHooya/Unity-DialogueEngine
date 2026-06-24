@@ -1,0 +1,82 @@
+﻿{
+    "GENERAL_HELLO": {
+        "ko": "안녕하세요",
+        "en": "Hi"
+    },
+    "GENERAL_GOODBYE": {
+        "ko": "안녕히 가세요",
+        "en": "Goodbye"
+    },
+    "GENERAL_YES": {
+        "ko": "네",
+        "en": "Yes"
+    },
+    "GENERAL_NO": {
+        "ko": "아니요",
+        "en": "No"
+    },
+    "WORKING_TIME": {
+        "ko": "일하고 있어요",
+        "en": "I'm working"
+    },
+    "FREE_TIME": {
+        "ko": "쉬고 있어요",
+        "en": "I'm free"
+    },
+    "NOT_IN_WORKING_TIME": {
+        "ko": "지금은 일할 시간이 아니에요",
+        "en": "It's not working time right now"
+    },
+    "DIALOGUE_TEXT_1": {
+        "ko": "오늘 날씨가 좋네요",
+        "en": "The weather is nice today"
+    },
+    "DIALOGUE_TEXT_2": {
+        "ko": "무슨 일 있어요?",
+        "en": "Is something wrong?"
+    },
+    "DIALOGUE_TEXT_3": {
+        "ko": "저는 괜찮아요",
+        "en": "I'm fine"
+    },
+    "DIALOGUE_TEXT_4": {
+        "ko": "그럼 다행이네요",
+        "en": "That's good to hear"
+    },
+    "DIALOGUE_TEXT_5": {
+        "ko": "슬픈 소식이군요",
+        "en": "That's unfortunate"
+    },
+    "DIALOGUE_TEXT_6": {
+        "ko": "(말을 한 이유는)",
+        "en": "The reason I said that"
+    },
+    "DIALOGUE_TEXT_7": {
+        "ko": "느낌이 이상해요",
+        "en": "I feel strange"
+    },
+    "DIALOGUE_TEXT_8": {
+        "ko": "그럴 때도 있죠",
+        "en": "That happens sometimes"
+    },
+    "DIALOGUE_TEXT_9": {
+        "ko": "괜찮아요, 시간이 해결해 줄 거예요",
+        "en": "It's okay, time will heal"
+    },
+    "HUNGRY": {
+        "ko": "배고파요",
+        "en": "I'm hungry"
+    },
+    "THIRSTY": {
+        "ko": "목말라요",
+        "en": "I'm thirsty"
+    },
+    "EAT_SOMETHING": {
+        "ko": "뭔가 먹으세요",
+        "en": "Eat something"
+    },
+    "DRINK_SOMETHING": {
+        "ko": "뭔가 마시세요",
+        "en": "Drink something"
+    }
+}
